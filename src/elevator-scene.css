@@ -1,0 +1,93 @@
+/* Tower of Worlds: exact 1672x941 user-supplied elevator and door layers.
+   White covers the entire backdrop, even behind the opaque cabin frame.
+   Both leaves only TRANSLATE, never scale independently or rotate. */
+#panel[data-screen="phone"],#panel[data-screen="elevator"]{
+  padding:0;overflow:hidden;place-items:center;background:#000;
+}
+#panel[data-screen="elevator"]{background:#fff}
+.phone-cinematic{position:relative;display:grid;place-items:center;width:100%;height:100dvh;background:#000;color:#fff}
+.phone-cinematic-line{width:min(100% - 72px,1100px);font:500 clamp(22px,3vw,43px) Rajdhani,system-ui,sans-serif;
+ text-align:center;line-height:1.35;text-shadow:none;animation:phone-appear .22s ease both}
+@keyframes phone-appear{from{opacity:0}to{opacity:1}}
+.phone-skip{position:absolute;right:clamp(15px,3vw,50px);bottom:max(24px,env(safe-area-inset-bottom));
+ border:1px solid #777;background:#080808;color:#fff;letter-spacing:.13em;
+ font:700 clamp(13px,1.3vw,18px) Rajdhani,system-ui;padding:10px 18px}
+.phone-skip:hover,.phone-skip:focus-visible{background:#fff;color:#111}
+.elevator-canvas{position:relative;isolation:isolate;width:min(100vw,177.68dvh);height:auto;
+ max-height:100dvh;aspect-ratio:1672/941;background:#fff;overflow:hidden;
+ transform-origin:50% 46%;--leaf-slide:1.05}
+.elevator-light-base{position:absolute;inset:0;background:#fff;z-index:0}
+.elevator-door-viewport{position:absolute;z-index:1;left:27.93%;top:17.32%;width:43.78%;height:73.86%;overflow:hidden}
+.elevator-door-pair{position:absolute;inset:0;display:flex;
+ transition:transform 1.35s cubic-bezier(.3,.02,.28,1)}
+.elevator-pair-current{transform:translateY(0)}
+.elevator-pair-incoming{transform:translateY(-108%)}
+.elevator-canvas[data-phase="moving"] .elevator-pair-current{transform:translateY(108%)}
+.elevator-canvas[data-phase="moving"] .elevator-pair-incoming,
+.elevator-canvas[data-phase="arrived"] .elevator-pair-incoming{transform:translateY(0)}
+/* Slide the old door DOWN only for a genuine trip to a DIFFERENT floor.
+   When the same door is already in front (data-travel="0"), the current pair
+   stays in place and its two leaves ONLY open horizontally. */
+.elevator-canvas[data-phase="arrived"][data-travel="1"] .elevator-pair-current,
+.elevator-canvas[data-phase="walking"][data-travel="1"] .elevator-pair-current{transform:translateY(108%)}
+.elevator-canvas[data-phase="walking"][data-travel="1"] .elevator-pair-incoming{transform:translateY(0)}
+.elevator-leaf{width:50%;height:100%;flex-shrink:0;
+ background-image:url('../assets/elevator/leaves.avif');background-size:300% 300%;
+ background-repeat:no-repeat;transition:transform 1.3s cubic-bezier(.2,.03,.15,1)}
+.elevator-canvas[data-door-state="open"] .elevator-leaf-left{transform:translateX(-105%)}
+.elevator-canvas[data-door-state="open"] .elevator-leaf-right{transform:translateX(105%)}
+.elevator-cabin{position:absolute;z-index:2;inset:0;width:100%;height:100%;object-fit:fill;
+ pointer-events:none;user-select:none}
+.elevator-controls{position:absolute;z-index:4;inset:0;pointer-events:none}
+/* Original cabin PNG and its button hitboxes remain unchanged.
+   The lamp canvas draws no extra floor numbers and never intercepts clicks. */
+.elevator-floor-hit,.elevator-service-hit{
+ position:absolute;z-index:4;appearance:none;border:0;border-radius:0;
+ outline:none!important;box-shadow:none!important;background:transparent!important;
+ color:transparent!important;padding:0;filter:none!important;transform:none;
+ pointer-events:auto;cursor:pointer
+}
+.elevator-floor-hit{left:calc(74.18% + var(--floor-column)*3.63%);
+ top:calc(30.78% + var(--floor-row)*5.94%);width:3.05%;height:5%}
+.elevator-service-hit{left:75.1%;top:59.9%;width:4.2%;height:5.8%}
+/* Original source photo remains unchanged: finished buttons keep exactly
+   their baked-in unlit colour. The pixel-aligned canvas recolours only the
+   centres of unfinished button faces yellow, never adding HTML borders. */
+.elevator-lamp-art{
+ position:absolute;z-index:3;inset:0;width:100%;height:100%;
+ pointer-events:none;
+}
+.elevator-floor-hit::before,.elevator-floor-hit::after,
+.elevator-service-hit::before,.elevator-service-hit::after{content:none!important}
+.elevator-floor-hit:hover,.elevator-floor-hit:focus-visible,
+.elevator-service-hit:hover,.elevator-service-hit:focus-visible{
+ outline:none!important;box-shadow:none!important;background:transparent!important
+}
+.elevator-halo{pointer-events:none;position:absolute;z-index:5;left:28.5%;top:16.5%;width:41.4%;height:74%;
+ background:radial-gradient(ellipse at center,#fff 4%,#ffffffe9 44%,#ffffff00 82%);
+ opacity:0;transition:opacity 1.15s ease}
+.elevator-canvas[data-door-state="open"] .elevator-halo{opacity:.62}
+.elevator-canvas[data-phase="walking"]{animation:elevator-forward 1.35s ease-in both}
+.elevator-canvas[data-phase="walking"] .elevator-halo{opacity:1}
+@keyframes elevator-forward{from{transform:scale(1)}to{transform:scale(1.28)}}
+.elevator-dialogue{pointer-events:none;position:absolute;z-index:7;bottom:3%;left:13%;right:13%;
+ text-align:center;font:800 clamp(17px,2.45vw,34px) 'Barlow Condensed',sans-serif;
+ letter-spacing:.02em;line-height:1.18;color:#fff;
+ text-shadow:1px 2px 2px #000,0 0 12px #000,0 0 20px #000;
+ min-height:1.2em}
+.elevator-menu{position:absolute;z-index:8;top:3%;right:2%;font:800 clamp(11px,1.3vw,18px) Rajdhani,sans-serif;
+ background:#141720e9;color:#fff;border:1px solid #fff7;padding:7px 15px}
+.elevator-menu:hover{background:#333}
+#elevatorWhiteout{position:fixed;z-index:15;inset:0;pointer-events:none;background:#fff;
+ opacity:0;transition:opacity .85s ease}
+#elevatorWhiteout.show{opacity:1}
+#elevatorWhiteout.reveal{opacity:0}
+@media(max-width:640px){
+ .elevator-dialogue{left:3%;right:3%;bottom:2%;font-size:14px}
+ .elevator-menu{font-size:10px}
+ .phone-cinematic-line{width:calc(100% - 32px);font-size:20px}
+}
+@media(prefers-reduced-motion:reduce){
+ .elevator-door-pair,.elevator-leaf{transition-duration:.01ms}
+ .elevator-canvas[data-phase="walking"]{animation-duration:.01ms}
+}

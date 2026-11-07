@@ -1,0 +1,13 @@
+/* The illuminated playfield now contains all in-match information.
+   Keep the physical pause control on touch devices, not the redundant HUD. */
+#hud>div.hud-left,#hud>div.hud-right,#hud #score{display:none!important}
+#hud:not([hidden]){display:flex;justify-content:flex-end;align-items:flex-start}
+#hud{top:calc(var(--arena-top) + 8px);right:calc(var(--arena-side) + 10px);left:auto;width:auto;pointer-events:none}
+#hud #pauseButton{pointer-events:auto}
+#roundAnnouncement{display:none!important}
+@media (pointer:fine) and (hover:hover){
+  #hud #pauseButton{display:none!important}
+}
+@media(max-width:760px){
+  #hud{top:calc(var(--arena-top) + 5px);right:calc(var(--arena-side) + 5px)}
+}
